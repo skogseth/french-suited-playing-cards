@@ -1,9 +1,12 @@
 [package]
 name = "french-suited-playing-cards"
-version = "0.1.0"
+version = "0.1.1"
+authors = ["Herman Skogseth herman.skogseth@me.com"]
 edition = "2021"
 description = "Implementation of objects commonly used in games using french-suited playing cards. "
 license = "MIT"
+repository = "https://github.com/skogseth/french-suited-playing-cards"
+keywords = ["card", "games"]
 
 
 [dependencies]

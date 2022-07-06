@@ -7,7 +7,7 @@ use crate::card::{rank::Rank, suit::Suit};
 /// # Examples
 ///
 /// ```
-/// use cards::{Card, Rank, Suit};
+/// use french_suited_playing_cards::{Card, Rank, Suit};
 ///
 /// let card = Card::new(Rank::Ace, Suit::Spades);
 /// assert_eq!(card.rank(), Rank::Ace);
