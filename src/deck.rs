@@ -3,8 +3,9 @@ use rand::Rng;
 use crate::card::{rank::Rank, suit::Suit, Card};
 
 mod deck_type;
+use crate::deck::deck_type::DeckType;
 
-pub const DEFAULT_DECKSIZE: usize = 52;
+static mut DECKTYPE: DeckType = DeckType::Standard;
 
 /// A deck of cards, with basic functionality for shuffling and drawing from the deck.
 ///
@@ -40,16 +41,18 @@ pub const DEFAULT_DECKSIZE: usize = 52;
 /// assert_eq!(hand.len(), 5);
 /// ```
 pub struct Deck {
+    decktype: DeckType,
     cards: Vec<Card>,
 }
 
 impl Deck {
     pub fn new() -> Deck {
         let mut deck = Deck {
-            cards: Vec::with_capacity(DEFAULT_DECKSIZE),
+            decktype: unsafe { DECKTYPE },
+            cards: Vec::with_capacity(unsafe { DECKTYPE }.decksize()),
         };
         for s in Suit::iterator() {
-            for r in Rank::iterator() {
+            for r in deck.decktype.ranks() {
                 deck.cards.push(Card::new(r, s));
             }
         }

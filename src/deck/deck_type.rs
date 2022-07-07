@@ -1,5 +1,6 @@
 use crate::card::rank::Rank::{self, *};
 
+#[derive(Clone, Copy)]
 pub enum DeckType {
     Standard,
     Piquet,
@@ -17,6 +18,10 @@ impl DeckType {
             Piquet => vec![Ace, Seven, Eight, Nine, Ten, Jack, Queen, King],
             Jass => vec![Ace, Six, Seven, Eight, Nine, Ten, Jack, Queen, King],
         }
+    }
+
+    pub fn decksize(&self) -> usize {
+        4 * self.ranks().len()
     }
 }
 
