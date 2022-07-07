@@ -47,15 +47,17 @@ pub struct Deck {
 
 impl Deck {
     pub fn new() -> Deck {
-        let mut deck = Deck {
-            decktype: unsafe { DECKTYPE },
-            cards: Vec::with_capacity(unsafe { DECKTYPE }.decksize()),
-        };
+        let decktype = unsafe { DECKTYPE };
+        let cards = Vec::with_capacity(decktype.decksize());
+
+        let mut deck = Deck { decktype, cards };
+
         for s in Suit::iterator() {
             for r in deck.decktype.ranks() {
                 deck.cards.push(Card::new(r, s));
             }
         }
+
         deck
     }
 
@@ -86,6 +88,10 @@ impl Deck {
             j = rand::thread_rng().gen_range(1..self.size());
             self.cards.swap(i, j);
         }
+    }
+
+    pub unsafe fn set_decktype(decktype: DeckType) {
+        DECKTYPE = decktype;
     }
 }
 
