@@ -2,6 +2,8 @@ use rand::Rng;
 
 use crate::card::{rank::Rank, suit::Suit, Card};
 
+mod deck_type;
+
 pub const DEFAULT_DECKSIZE: usize = 52;
 
 /// A deck of cards, with basic functionality for shuffling and drawing from the deck.
@@ -30,7 +32,8 @@ pub const DEFAULT_DECKSIZE: usize = 52;
 ///     if let Some(card) = deck.draw() {
 ///         hand.push(card);
 ///     } else {
-///         // deck is empty, no card available -> choose to add new shuffled deck
+///         // deck is empty, no card available
+///         // => choose to add new shuffled deck
 ///         deck = Deck::shuffled();
 ///     }
 /// }
