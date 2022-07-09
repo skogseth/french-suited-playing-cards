@@ -1,11 +1,9 @@
 use rand::Rng;
 
-use crate::card::{rank::Rank, suit::Suit, Card};
+use crate::card::{suit::Suit, Card};
 
 mod deck_type;
 use crate::deck::deck_type::DeckType;
-
-static mut DECKTYPE: DeckType = DeckType::Standard;
 
 /// A deck of cards, with basic functionality for shuffling and drawing from the deck.
 ///
@@ -47,7 +45,7 @@ pub struct Deck {
 
 impl Deck {
     pub fn new() -> Deck {
-        let decktype = unsafe { DECKTYPE };
+        let decktype = DeckType::Standard;
         let cards = Vec::with_capacity(decktype.decksize());
 
         let mut deck = Deck { decktype, cards };
@@ -63,6 +61,26 @@ impl Deck {
 
     pub fn shuffled() -> Deck {
         let mut deck = Deck::new();
+        deck.shuffle();
+        deck
+    }
+
+    pub fn new_given(decktype: DeckType) -> Deck {
+        let cards = Vec::with_capacity(decktype.decksize());
+
+        let mut deck = Deck { decktype, cards };
+
+        for s in Suit::iterator() {
+            for r in deck.decktype.ranks() {
+                deck.cards.push(Card::new(r, s));
+            }
+        }
+
+        deck
+    }
+
+    pub fn shuffled_given(decktype: DeckType) -> Deck {
+        let mut deck = Deck::new_given(decktype);
         deck.shuffle();
         deck
     }
@@ -89,15 +107,12 @@ impl Deck {
             self.cards.swap(i, j);
         }
     }
-
-    pub unsafe fn set_decktype(decktype: DeckType) {
-        DECKTYPE = decktype;
-    }
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::card::rank::Rank;
 
     #[test]
     fn ordered() {
