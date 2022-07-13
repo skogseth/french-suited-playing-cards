@@ -1,6 +1,6 @@
 use rand::Rng;
 
-use crate::card::{suit::Suit, Card};
+use crate::card::{color::Color, rank::Rank, suit::Suit, Card};
 
 mod deck_type;
 use crate::deck::deck_type::DeckType;
@@ -14,9 +14,9 @@ use crate::deck::deck_type::DeckType;
 ///
 /// let mut deck = Deck::new();
 ///
-/// assert_eq!(deck.draw(), Some(Card::new(Rank::King, Suit::Spades)));
-/// assert_eq!(deck.draw(), Some(Card::new(Rank::Queen, Suit::Spades)));
-/// assert_eq!(deck.draw(), Some(Card::new(Rank::Jack, Suit::Spades)));
+/// assert_eq!(deck.draw(), Some(Card::Standard(Rank::King, Suit::Spades)));
+/// assert_eq!(deck.draw(), Some(Card::Standard(Rank::Queen, Suit::Spades)));
+/// assert_eq!(deck.draw(), Some(Card::Standard(Rank::Jack, Suit::Spades)));
 /// ```
 ///
 /// ```
@@ -52,7 +52,7 @@ impl Deck {
 
         for s in Suit::iterator() {
             for r in deck.decktype.ranks() {
-                deck.cards.push(Card::new(r, s));
+                deck.cards.push(Card::Standard(r, s));
             }
         }
 
@@ -65,6 +65,12 @@ impl Deck {
         deck
     }
 
+    pub fn empty() -> Deck {
+        let decktype = DeckType::Standard;
+        let cards = Vec::with_capacity(decktype.decksize());
+        Deck { decktype, cards }
+    }
+
     pub fn new_given(decktype: DeckType) -> Deck {
         let cards = Vec::with_capacity(decktype.decksize());
 
@@ -72,7 +78,7 @@ impl Deck {
 
         for s in Suit::iterator() {
             for r in deck.decktype.ranks() {
-                deck.cards.push(Card::new(r, s));
+                deck.cards.push(Card::Standard(r, s));
             }
         }
 
@@ -83,6 +89,11 @@ impl Deck {
         let mut deck = Deck::new_given(decktype);
         deck.shuffle();
         deck
+    }
+
+    pub fn empty_given(decktype: DeckType) -> Deck {
+        let cards = Vec::with_capacity(decktype.decksize());
+        Deck { decktype, cards }
     }
 
     pub fn size(&self) -> usize {
@@ -107,73 +118,130 @@ impl Deck {
             self.cards.swap(i, j);
         }
     }
+
+    pub fn add_card(&mut self, card: Card) {
+        self.cards.push(card);
+    }
+
+    pub fn add_standard(&mut self, rank: Rank, suit: Suit) {
+        self.cards.push(Card::Standard(rank, suit));
+    }
+
+    pub fn add_joker(&mut self, color: Color) {
+        self.cards.push(Card::Joker(color));
+    }
+
+    pub fn remove_match(&mut self, card: Card) {
+        self.cards.retain(|c| *c != card);
+    }
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::card::rank::Rank;
+    use crate::card::{color::Color::*, rank::Rank::*, suit::Suit::*};
 
     #[test]
     fn ordered() {
         let mut deck = Deck::new();
 
-        assert_eq!(deck.draw(), Some(Card::new(Rank::King, Suit::Spades)));
-        assert_eq!(deck.draw(), Some(Card::new(Rank::Queen, Suit::Spades)));
-        assert_eq!(deck.draw(), Some(Card::new(Rank::Jack, Suit::Spades)));
-        assert_eq!(deck.draw(), Some(Card::new(Rank::Ten, Suit::Spades)));
-        assert_eq!(deck.draw(), Some(Card::new(Rank::Nine, Suit::Spades)));
-        assert_eq!(deck.draw(), Some(Card::new(Rank::Eight, Suit::Spades)));
-        assert_eq!(deck.draw(), Some(Card::new(Rank::Seven, Suit::Spades)));
-        assert_eq!(deck.draw(), Some(Card::new(Rank::Six, Suit::Spades)));
-        assert_eq!(deck.draw(), Some(Card::new(Rank::Five, Suit::Spades)));
-        assert_eq!(deck.draw(), Some(Card::new(Rank::Four, Suit::Spades)));
-        assert_eq!(deck.draw(), Some(Card::new(Rank::Three, Suit::Spades)));
-        assert_eq!(deck.draw(), Some(Card::new(Rank::Two, Suit::Spades)));
-        assert_eq!(deck.draw(), Some(Card::new(Rank::Ace, Suit::Spades)));
+        assert_eq!(deck.draw(), Some(Card::Standard(King, Spades)));
+        assert_eq!(deck.draw(), Some(Card::Standard(Queen, Spades)));
+        assert_eq!(deck.draw(), Some(Card::Standard(Jack, Spades)));
+        assert_eq!(deck.draw(), Some(Card::Standard(Ten, Spades)));
+        assert_eq!(deck.draw(), Some(Card::Standard(Nine, Spades)));
+        assert_eq!(deck.draw(), Some(Card::Standard(Eight, Spades)));
+        assert_eq!(deck.draw(), Some(Card::Standard(Seven, Spades)));
+        assert_eq!(deck.draw(), Some(Card::Standard(Six, Spades)));
+        assert_eq!(deck.draw(), Some(Card::Standard(Five, Spades)));
+        assert_eq!(deck.draw(), Some(Card::Standard(Four, Spades)));
+        assert_eq!(deck.draw(), Some(Card::Standard(Three, Spades)));
+        assert_eq!(deck.draw(), Some(Card::Standard(Two, Spades)));
+        assert_eq!(deck.draw(), Some(Card::Standard(Ace, Spades)));
 
-        assert_eq!(deck.draw(), Some(Card::new(Rank::King, Suit::Hearts)));
-        assert_eq!(deck.draw(), Some(Card::new(Rank::Queen, Suit::Hearts)));
-        assert_eq!(deck.draw(), Some(Card::new(Rank::Jack, Suit::Hearts)));
-        assert_eq!(deck.draw(), Some(Card::new(Rank::Ten, Suit::Hearts)));
-        assert_eq!(deck.draw(), Some(Card::new(Rank::Nine, Suit::Hearts)));
-        assert_eq!(deck.draw(), Some(Card::new(Rank::Eight, Suit::Hearts)));
-        assert_eq!(deck.draw(), Some(Card::new(Rank::Seven, Suit::Hearts)));
-        assert_eq!(deck.draw(), Some(Card::new(Rank::Six, Suit::Hearts)));
-        assert_eq!(deck.draw(), Some(Card::new(Rank::Five, Suit::Hearts)));
-        assert_eq!(deck.draw(), Some(Card::new(Rank::Four, Suit::Hearts)));
-        assert_eq!(deck.draw(), Some(Card::new(Rank::Three, Suit::Hearts)));
-        assert_eq!(deck.draw(), Some(Card::new(Rank::Two, Suit::Hearts)));
-        assert_eq!(deck.draw(), Some(Card::new(Rank::Ace, Suit::Hearts)));
+        assert_eq!(deck.draw(), Some(Card::Standard(King, Hearts)));
+        assert_eq!(deck.draw(), Some(Card::Standard(Queen, Hearts)));
+        assert_eq!(deck.draw(), Some(Card::Standard(Jack, Hearts)));
+        assert_eq!(deck.draw(), Some(Card::Standard(Ten, Hearts)));
+        assert_eq!(deck.draw(), Some(Card::Standard(Nine, Hearts)));
+        assert_eq!(deck.draw(), Some(Card::Standard(Eight, Hearts)));
+        assert_eq!(deck.draw(), Some(Card::Standard(Seven, Hearts)));
+        assert_eq!(deck.draw(), Some(Card::Standard(Six, Hearts)));
+        assert_eq!(deck.draw(), Some(Card::Standard(Five, Hearts)));
+        assert_eq!(deck.draw(), Some(Card::Standard(Four, Hearts)));
+        assert_eq!(deck.draw(), Some(Card::Standard(Three, Hearts)));
+        assert_eq!(deck.draw(), Some(Card::Standard(Two, Hearts)));
+        assert_eq!(deck.draw(), Some(Card::Standard(Ace, Hearts)));
 
-        assert_eq!(deck.draw(), Some(Card::new(Rank::King, Suit::Diamonds)));
-        assert_eq!(deck.draw(), Some(Card::new(Rank::Queen, Suit::Diamonds)));
-        assert_eq!(deck.draw(), Some(Card::new(Rank::Jack, Suit::Diamonds)));
-        assert_eq!(deck.draw(), Some(Card::new(Rank::Ten, Suit::Diamonds)));
-        assert_eq!(deck.draw(), Some(Card::new(Rank::Nine, Suit::Diamonds)));
-        assert_eq!(deck.draw(), Some(Card::new(Rank::Eight, Suit::Diamonds)));
-        assert_eq!(deck.draw(), Some(Card::new(Rank::Seven, Suit::Diamonds)));
-        assert_eq!(deck.draw(), Some(Card::new(Rank::Six, Suit::Diamonds)));
-        assert_eq!(deck.draw(), Some(Card::new(Rank::Five, Suit::Diamonds)));
-        assert_eq!(deck.draw(), Some(Card::new(Rank::Four, Suit::Diamonds)));
-        assert_eq!(deck.draw(), Some(Card::new(Rank::Three, Suit::Diamonds)));
-        assert_eq!(deck.draw(), Some(Card::new(Rank::Two, Suit::Diamonds)));
-        assert_eq!(deck.draw(), Some(Card::new(Rank::Ace, Suit::Diamonds)));
+        assert_eq!(deck.draw(), Some(Card::Standard(King, Diamonds)));
+        assert_eq!(deck.draw(), Some(Card::Standard(Queen, Diamonds)));
+        assert_eq!(deck.draw(), Some(Card::Standard(Jack, Diamonds)));
+        assert_eq!(deck.draw(), Some(Card::Standard(Ten, Diamonds)));
+        assert_eq!(deck.draw(), Some(Card::Standard(Nine, Diamonds)));
+        assert_eq!(deck.draw(), Some(Card::Standard(Eight, Diamonds)));
+        assert_eq!(deck.draw(), Some(Card::Standard(Seven, Diamonds)));
+        assert_eq!(deck.draw(), Some(Card::Standard(Six, Diamonds)));
+        assert_eq!(deck.draw(), Some(Card::Standard(Five, Diamonds)));
+        assert_eq!(deck.draw(), Some(Card::Standard(Four, Diamonds)));
+        assert_eq!(deck.draw(), Some(Card::Standard(Three, Diamonds)));
+        assert_eq!(deck.draw(), Some(Card::Standard(Two, Diamonds)));
+        assert_eq!(deck.draw(), Some(Card::Standard(Ace, Diamonds)));
 
-        assert_eq!(deck.draw(), Some(Card::new(Rank::King, Suit::Clubs)));
-        assert_eq!(deck.draw(), Some(Card::new(Rank::Queen, Suit::Clubs)));
-        assert_eq!(deck.draw(), Some(Card::new(Rank::Jack, Suit::Clubs)));
-        assert_eq!(deck.draw(), Some(Card::new(Rank::Ten, Suit::Clubs)));
-        assert_eq!(deck.draw(), Some(Card::new(Rank::Nine, Suit::Clubs)));
-        assert_eq!(deck.draw(), Some(Card::new(Rank::Eight, Suit::Clubs)));
-        assert_eq!(deck.draw(), Some(Card::new(Rank::Seven, Suit::Clubs)));
-        assert_eq!(deck.draw(), Some(Card::new(Rank::Six, Suit::Clubs)));
-        assert_eq!(deck.draw(), Some(Card::new(Rank::Five, Suit::Clubs)));
-        assert_eq!(deck.draw(), Some(Card::new(Rank::Four, Suit::Clubs)));
-        assert_eq!(deck.draw(), Some(Card::new(Rank::Three, Suit::Clubs)));
-        assert_eq!(deck.draw(), Some(Card::new(Rank::Two, Suit::Clubs)));
-        assert_eq!(deck.draw(), Some(Card::new(Rank::Ace, Suit::Clubs)));
+        assert_eq!(deck.draw(), Some(Card::Standard(King, Clubs)));
+        assert_eq!(deck.draw(), Some(Card::Standard(Queen, Clubs)));
+        assert_eq!(deck.draw(), Some(Card::Standard(Jack, Clubs)));
+        assert_eq!(deck.draw(), Some(Card::Standard(Ten, Clubs)));
+        assert_eq!(deck.draw(), Some(Card::Standard(Nine, Clubs)));
+        assert_eq!(deck.draw(), Some(Card::Standard(Eight, Clubs)));
+        assert_eq!(deck.draw(), Some(Card::Standard(Seven, Clubs)));
+        assert_eq!(deck.draw(), Some(Card::Standard(Six, Clubs)));
+        assert_eq!(deck.draw(), Some(Card::Standard(Five, Clubs)));
+        assert_eq!(deck.draw(), Some(Card::Standard(Four, Clubs)));
+        assert_eq!(deck.draw(), Some(Card::Standard(Three, Clubs)));
+        assert_eq!(deck.draw(), Some(Card::Standard(Two, Clubs)));
+        assert_eq!(deck.draw(), Some(Card::Standard(Ace, Clubs)));
 
+        assert_eq!(deck.draw(), None);
+    }
+
+    #[test]
+    fn add_cards() {
+        let mut deck = Deck::empty();
+
+        deck.add_card(Card::Standard(Five, Clubs));
+        deck.add_card(Card::Joker(Red));
+        deck.add_standard(Queen, Spades);
+        deck.add_joker(Black);
+
+        assert_eq!(deck.draw(), Some(Card::Joker(Black)));
+        assert_eq!(deck.draw(), Some(Card::Standard(Queen, Spades)));
+        assert_eq!(deck.draw(), Some(Card::Joker(Red)));
+        assert_eq!(deck.draw(), Some(Card::Standard(Five, Clubs)));
+        assert_eq!(deck.draw(), None);
+    }
+
+    #[test]
+    fn remove_cards() {
+        let mut deck = Deck::empty();
+
+        for r in Rank::iterator() {
+            deck.add_card(Card::Standard(r, Spades));
+        }
+
+        deck.remove_match(Card::Standard(King, Spades));
+        deck.remove_match(Card::Standard(Ten, Spades));
+        deck.remove_match(Card::Standard(Four, Spades));
+        deck.remove_match(Card::Standard(Three, Spades));
+
+        assert_eq!(deck.draw(), Some(Card::Standard(Queen, Spades)));
+        assert_eq!(deck.draw(), Some(Card::Standard(Jack, Spades)));
+        assert_eq!(deck.draw(), Some(Card::Standard(Nine, Spades)));
+        assert_eq!(deck.draw(), Some(Card::Standard(Eight, Spades)));
+        assert_eq!(deck.draw(), Some(Card::Standard(Seven, Spades)));
+        assert_eq!(deck.draw(), Some(Card::Standard(Six, Spades)));
+        assert_eq!(deck.draw(), Some(Card::Standard(Five, Spades)));
+        assert_eq!(deck.draw(), Some(Card::Standard(Two, Spades)));
+        assert_eq!(deck.draw(), Some(Card::Standard(Ace, Spades)));
         assert_eq!(deck.draw(), None);
     }
 }
