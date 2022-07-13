@@ -1,6 +1,6 @@
 [package]
 name = "french-suited-playing-cards"
-version = "0.2.0"
+version = "0.3.0"
 authors = ["Herman Skogseth herman.skogseth@me.com"]
 edition = "2021"
 description = "Implementation of objects commonly used in games using french-suited playing cards. "
