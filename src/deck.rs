@@ -107,6 +107,11 @@ impl Deck {
             self.cards.swap(i, j);
         }
     }
+
+    pub fn remove_card(&self, card: Card) {}
+    pub fn add_card(&self) {}
+    pub fn add_jokers(&self, n: usize) {}
+    pub fn add_deck(&self) {}
 }
 
 #[cfg(test)]
