@@ -65,6 +65,12 @@ impl Deck {
         deck
     }
 
+    pub fn empty() -> Deck {
+        let decktype = DeckType::Standard;
+        let cards = Vec::with_capacity(decktype.decksize());
+        Deck { decktype, cards }
+    }
+
     pub fn new_given(decktype: DeckType) -> Deck {
         let cards = Vec::with_capacity(decktype.decksize());
 
@@ -83,6 +89,11 @@ impl Deck {
         let mut deck = Deck::new_given(decktype);
         deck.shuffle();
         deck
+    }
+
+    pub fn empty_given(decktype: DeckType) -> Deck {
+        let cards = Vec::with_capacity(decktype.decksize());
+        Deck { decktype, cards }
     }
 
     pub fn size(&self) -> usize {
@@ -108,10 +119,6 @@ impl Deck {
         }
     }
 
-    pub fn remove_match(&mut self, card: Card) {
-        self.cards.retain(|c| *c != card);
-    }
-
     pub fn add_card(&mut self, card: Card) {
         self.cards.push(card);
     }
@@ -123,12 +130,16 @@ impl Deck {
     pub fn add_joker(&mut self, color: Color) {
         self.cards.push(Card::Joker(color));
     }
+
+    pub fn remove_match(&mut self, card: Card) {
+        self.cards.retain(|c| *c != card);
+    }
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::card::{rank::Rank::*, suit::Suit::*};
+    use crate::card::{color::Color::*, rank::Rank::*, suit::Suit::*};
 
     #[test]
     fn ordered() {
@@ -190,6 +201,47 @@ mod tests {
         assert_eq!(deck.draw(), Some(Card::Standard(Two, Clubs)));
         assert_eq!(deck.draw(), Some(Card::Standard(Ace, Clubs)));
 
+        assert_eq!(deck.draw(), None);
+    }
+
+    #[test]
+    fn add_cards() {
+        let mut deck = Deck::empty();
+
+        deck.add_card(Card::Standard(Five, Clubs));
+        deck.add_card(Card::Joker(Red));
+        deck.add_standard(Queen, Spades);
+        deck.add_joker(Black);
+
+        assert_eq!(deck.draw(), Some(Card::Joker(Black)));
+        assert_eq!(deck.draw(), Some(Card::Standard(Queen, Spades)));
+        assert_eq!(deck.draw(), Some(Card::Joker(Red)));
+        assert_eq!(deck.draw(), Some(Card::Standard(Five, Clubs)));
+        assert_eq!(deck.draw(), None);
+    }
+
+    #[test]
+    fn remove_cards() {
+        let mut deck = Deck::empty();
+
+        for r in Rank::iterator() {
+            deck.add_card(Card::Standard(r, Spades));
+        }
+
+        deck.remove_match(Card::Standard(King, Spades));
+        deck.remove_match(Card::Standard(Ten, Spades));
+        deck.remove_match(Card::Standard(Four, Spades));
+        deck.remove_match(Card::Standard(Three, Spades));
+
+        assert_eq!(deck.draw(), Some(Card::Standard(Queen, Spades)));
+        assert_eq!(deck.draw(), Some(Card::Standard(Jack, Spades)));
+        assert_eq!(deck.draw(), Some(Card::Standard(Nine, Spades)));
+        assert_eq!(deck.draw(), Some(Card::Standard(Eight, Spades)));
+        assert_eq!(deck.draw(), Some(Card::Standard(Seven, Spades)));
+        assert_eq!(deck.draw(), Some(Card::Standard(Six, Spades)));
+        assert_eq!(deck.draw(), Some(Card::Standard(Five, Spades)));
+        assert_eq!(deck.draw(), Some(Card::Standard(Two, Spades)));
+        assert_eq!(deck.draw(), Some(Card::Standard(Ace, Spades)));
         assert_eq!(deck.draw(), None);
     }
 }
