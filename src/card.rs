@@ -14,7 +14,7 @@ use crate::card::{rank::Rank, suit::Suit};
 /// assert_eq!(card.suit(), Suit::Spades);
 /// assert_eq!(format!("{card}"), "Ace of Spades");
 /// ```
-#[derive(Clone, Copy, PartialEq, Eq)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub struct Card {
     rank: Rank,
     suit: Suit,
