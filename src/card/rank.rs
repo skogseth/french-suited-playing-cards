@@ -19,12 +19,10 @@ impl Rank {
         }
     }
 
-    pub fn iterator() -> impl Iterator<Item = Rank> {
-        [
-            Ace, Two, Three, Four, Five, Six, Seven, Eight, Nine, Ten, Jack, Queen, King,
-        ]
-        .iter()
-        .copied()
+    pub fn iterator() -> impl Iterator<Item = Rank> + Clone {
+        [Ace, Two, Three, Four, Five, Six, Seven, Eight, Nine, Ten, Jack, Queen, King]
+            .iter()
+            .copied()
     }
 }
 

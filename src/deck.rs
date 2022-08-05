@@ -1,31 +1,22 @@
 use rand::Rng;
 
-pub mod deck_type;
+pub mod decktype;
 
 use crate::{Card, Deck};
 use crate::card::{Color, Rank, Suit};
 
-#[derive(Clone, Copy)]
-pub enum DeckType {
-    Standard,
-    Piquet,
-    Jass,
+pub trait DeckType {
+    fn cards(&self) -> Vec<Card>;
+    fn decksize(&self) -> usize {
+        self.cards().len()
+    }
 }
 
 impl Deck {
     pub fn new() -> Deck {
-        let decktype = DeckType::Standard;
-        let cards = Vec::with_capacity(decktype.decksize());
-
-        let mut deck = Deck { decktype, cards };
-
-        for s in Suit::iterator() {
-            for r in deck.decktype.ranks() {
-                deck.cards.push(Card::Standard(r, s));
-            }
-        }
-
-        deck
+        let decktype = Box::new(decktype::Standard);
+        let cards = decktype.cards();
+        Deck { decktype, cards }
     }
 
     pub fn shuffled() -> Deck {
@@ -35,32 +26,23 @@ impl Deck {
     }
 
     pub fn empty() -> Deck {
-        let decktype = DeckType::Standard;
+        let decktype = Box::new(decktype::Standard);
         let cards = Vec::with_capacity(decktype.decksize());
         Deck { decktype, cards }
     }
 
-    pub fn new_given(decktype: DeckType) -> Deck {
-        let cards = Vec::with_capacity(decktype.decksize());
-
-        let mut deck = Deck { decktype, cards };
-
-        for s in Suit::iterator() {
-            for r in deck.decktype.ranks() {
-                deck.cards.push(Card::Standard(r, s));
-            }
-        }
-
-        deck
+    pub fn new_from_decktype(decktype: Box<dyn DeckType>) -> Deck {
+        let cards = decktype.cards();
+        Deck { decktype, cards }
     }
 
-    pub fn shuffled_given(decktype: DeckType) -> Deck {
-        let mut deck = Deck::new_given(decktype);
+    pub fn shuffled_from_decktype(decktype: Box<dyn DeckType>) -> Deck {
+        let mut deck = Deck::new_from_decktype(decktype);
         deck.shuffle();
         deck
     }
 
-    pub fn empty_given(decktype: DeckType) -> Deck {
+    pub fn empty_from_decktype(decktype: Box<dyn DeckType>) -> Deck {
         let cards = Vec::with_capacity(decktype.decksize());
         Deck { decktype, cards }
     }
@@ -100,7 +82,7 @@ impl Deck {
         self.cards.push(Card::Joker(color));
     }
 
-    pub fn remove_match(&mut self, card: Card) {
+    pub fn remove_matches(&mut self, card: Card) {
         self.cards.retain(|c| *c != card);
     }
 }
@@ -197,10 +179,10 @@ mod tests {
             deck.add_card(Card::Standard(r, Spades));
         }
 
-        deck.remove_match(Card::Standard(King, Spades));
-        deck.remove_match(Card::Standard(Ten, Spades));
-        deck.remove_match(Card::Standard(Four, Spades));
-        deck.remove_match(Card::Standard(Three, Spades));
+        deck.remove_matches(Card::Standard(King, Spades));
+        deck.remove_matches(Card::Standard(Ten, Spades));
+        deck.remove_matches(Card::Standard(Four, Spades));
+        deck.remove_matches(Card::Standard(Three, Spades));
 
         assert_eq!(deck.draw(), Some(Card::Standard(Queen, Spades)));
         assert_eq!(deck.draw(), Some(Card::Standard(Jack, Spades)));

@@ -73,13 +73,13 @@ pub enum Card {
 ///         hand.push(card);
 ///     } else {
 ///         // deck is empty, no card available
-///         // => choose to add new shuffled deck
+///         // => choose to replace with new shuffled deck
 ///         deck = Deck::shuffled();
 ///     }
 /// }
 /// assert_eq!(hand.len(), 5);
 /// ```
 pub struct Deck {
-    decktype: DeckType,
+    decktype: Box<dyn DeckType>,
     cards: Vec<Card>,
 }

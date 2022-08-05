@@ -10,7 +10,7 @@ impl Suit {
         }
     }
 
-    pub fn iterator() -> impl Iterator<Item = Suit> {
+    pub fn iterator() -> impl Iterator<Item = Suit> + Clone {
         [Clubs, Diamonds, Hearts, Spades].iter().copied()
     }
 }
