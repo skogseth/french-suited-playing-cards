@@ -1,47 +1,45 @@
 pub mod color;
 pub mod rank;
 pub mod suit;
-use crate::card::{color::Color, rank::Rank, suit::Suit};
+use crate::Card;
 
-/// Either a standard card with a specified rank and suit or a joker with a specified color.
-///
-/// # Examples
-///
-/// ```
-/// use french_suited_playing_cards::{Card, Rank, Suit};
-///
-/// let card = Card::Standard(Rank::Ace, Suit::Spades);
-///
-/// if let Card::Standard(rank, suit) = card {
-///     assert_eq!(rank, Rank::Ace);
-///     assert_eq!(suit, Suit::Spades);
-/// } else {
-///     panic!("rank and suit not found for card {}", card);
-/// }
-/// ```
-///
-/// ```
-/// use french_suited_playing_cards::{Card, Color};
-///
-/// let joker = Card::Joker(Color::Red);
-///
-/// if let Card::Joker(color) = joker {
-///     assert_eq!(color, Color::Red);
-/// } else {
-///     panic!("color not found for card {}", joker);
-/// }
-/// ```
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub enum Card {
-    Standard(Rank, Suit),
-    Joker(Color),
+pub enum Rank {
+    Ace = 1,
+    Two,
+    Three,
+    Four,
+    Five,
+    Six,
+    Seven,
+    Eight,
+    Nine,
+    Ten,
+    Jack,
+    Queen,
+    King,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum Suit {
+    Clubs,
+    Diamonds,
+    Hearts,
+    Spades,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum Color {
+    Red,
+    Black,
+    White,
 }
 
 impl Card {
     /// # Examples
     ///
     /// ```
-    /// use french_suited_playing_cards::{Card, Rank, Suit};
+    /// use french_suited_playing_cards::{Card, card::Rank, card::Suit};
     ///
     /// let card = Card::Standard(Rank::Eight, Suit::Diamonds);
     ///
@@ -59,7 +57,7 @@ impl Card {
     /// # Examples
     ///
     /// ```
-    /// use french_suited_playing_cards::{Card, Rank, Suit};
+    /// use french_suited_playing_cards::{Card, card::Rank, card::Suit};
     ///
     /// let card = Card::Standard(Rank::Jack, Suit::Clubs);
     ///
@@ -77,7 +75,7 @@ impl Card {
     /// # Examples
     ///
     /// ```
-    /// use french_suited_playing_cards::{Card, Rank, Suit};
+    /// use french_suited_playing_cards::{Card, card::Rank, card::Suit};
     ///
     /// let card = Card::Standard(Rank::King, Suit::Hearts);
     ///
@@ -96,7 +94,7 @@ impl Card {
     /// # Examples
     ///
     /// ```
-    /// use french_suited_playing_cards::{Card, Color};
+    /// use french_suited_playing_cards::{Card, card::Color};
     ///
     /// let card = Card::Joker(Color::Black);
     ///

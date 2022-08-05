@@ -1,11 +1,4 @@
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub enum Color {
-    Red,
-    Black,
-    White,
-}
-
-use self::Color::*;
+use crate::card::Color::{self, *};
 
 impl Color {
     fn to_str(&self) -> &str {

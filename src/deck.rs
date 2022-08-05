@@ -1,46 +1,15 @@
 use rand::Rng;
 
-use crate::card::{color::Color, rank::Rank, suit::Suit, Card};
+pub mod deck_type;
 
-mod deck_type;
-use crate::deck::deck_type::DeckType;
+use crate::{Card, Deck};
+use crate::card::{Color, Rank, Suit};
 
-/// A deck of cards, with basic functionality for shuffling and drawing from the deck.
-///
-/// # Examples
-///
-/// ```
-/// use french_suited_playing_cards::{Card, Deck, Rank, Suit};
-///
-/// let mut deck = Deck::new();
-///
-/// assert_eq!(deck.draw(), Some(Card::Standard(Rank::King, Suit::Spades)));
-/// assert_eq!(deck.draw(), Some(Card::Standard(Rank::Queen, Suit::Spades)));
-/// assert_eq!(deck.draw(), Some(Card::Standard(Rank::Jack, Suit::Spades)));
-/// ```
-///
-/// ```
-/// use french_suited_playing_cards::{Card, Deck, Rank, Suit};
-///
-/// let mut deck = Deck::shuffled();
-///
-/// /* ... */
-///
-/// let mut hand: Vec<Card> = Vec::new();
-/// while hand.len() < 5 {
-///     if let Some(card) = deck.draw() {
-///         hand.push(card);
-///     } else {
-///         // deck is empty, no card available
-///         // => choose to add new shuffled deck
-///         deck = Deck::shuffled();
-///     }
-/// }
-/// assert_eq!(hand.len(), 5);
-/// ```
-pub struct Deck {
-    decktype: DeckType,
-    cards: Vec<Card>,
+#[derive(Clone, Copy)]
+pub enum DeckType {
+    Standard,
+    Piquet,
+    Jass,
 }
 
 impl Deck {
@@ -139,7 +108,7 @@ impl Deck {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::card::{color::Color::*, rank::Rank::*, suit::Suit::*};
+    use crate::card::{Color::*, Rank::*, Suit::*};
 
     #[test]
     fn ordered() {

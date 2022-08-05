@@ -1,12 +1,4 @@
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub enum Suit {
-    Clubs,
-    Diamonds,
-    Hearts,
-    Spades,
-}
-
-use self::Suit::*;
+use crate::card::Suit::{self, *};
 
 impl Suit {
     fn to_str(&self) -> &str {

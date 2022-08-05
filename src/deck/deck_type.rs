@@ -1,20 +1,10 @@
-use crate::card::rank::Rank::{self, *};
-
-#[derive(Clone, Copy)]
-pub enum DeckType {
-    Standard,
-    Piquet,
-    Jass,
-}
-
-use self::DeckType::*;
+use crate::card::Rank::{self, *};
+use crate::deck::DeckType::{self, *};
 
 impl DeckType {
     pub fn ranks(&self) -> Vec<Rank> {
         match self {
-            Standard => vec![
-                Ace, Two, Three, Four, Five, Six, Seven, Eight, Nine, Ten, Jack, Queen, King,
-            ],
+            Standard => vec![Ace, Two, Three, Four, Five, Six, Seven, Eight, Nine, Ten, Jack, Queen, King],
             Piquet => vec![Ace, Seven, Eight, Nine, Ten, Jack, Queen, King],
             Jass => vec![Ace, Six, Seven, Eight, Nine, Ten, Jack, Queen, King],
         }

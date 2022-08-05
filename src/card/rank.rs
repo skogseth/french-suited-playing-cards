@@ -1,21 +1,4 @@
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub enum Rank {
-    Ace = 1,
-    Two,
-    Three,
-    Four,
-    Five,
-    Six,
-    Seven,
-    Eight,
-    Nine,
-    Ten,
-    Jack,
-    Queen,
-    King,
-}
-
-use self::Rank::*;
+use crate::card::Rank::{self, *};
 
 impl Rank {
     fn to_str(&self) -> &str {
