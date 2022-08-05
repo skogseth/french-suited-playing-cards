@@ -83,7 +83,7 @@ impl Deck {
         let mut j: usize;
 
         for _ in 0..n {
-            j = rand::thread_rng().gen_range(1..self.size());
+            j = rand::thread_rng().gen_range(1..self.cards.len());
             self.cards.swap(i, j);
         }
     }
