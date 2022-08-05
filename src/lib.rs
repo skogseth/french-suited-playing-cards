@@ -4,7 +4,8 @@
 //!
 //! This is in turn used to implement the deck-struct.
 //! Functionality for more deck-types is a work in progress,
-//! but currently supports Standard, Piquet and Jass decks
+//! but currently supports Standard (with/without jokers), Piquet and Jass decks,
+//! as well as the oppurtunity to create own types using the DeckType trait.
 
 pub mod card;
 pub mod deck;
